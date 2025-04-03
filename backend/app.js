@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 const notesRouter = require('./controllers/notes');
+const middleware = require('./utils/middleware');
+const cors = require('cors');
 
 const app = express();
 
@@ -17,7 +19,12 @@ mongoose.connect(config.mongoURL)
 });
 
 app.use(express.json());
+app.use(middleware.requestLogger);
+
 
 app.use('/api/blogs', notesRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;
